@@ -1,0 +1,85 @@
+#!/bin/bash
+# Assignment 1B: Address Book Program
+
+# File to store address book data
+file="addressbook.txt"
+
+while true
+do
+    echo "=============================="
+    echo "       ADDRESS BOOK MENU      "
+    echo "=============================="
+    echo "1. Create Address Book"
+    echo "2. View Address Book"
+    echo "3. Insert a Record"
+    echo "4. Delete a Record"
+    echo "5. Modify a Record"
+    echo "6. Exit"
+    echo "=============================="
+    echo "Enter your choice:"
+    read choice
+
+    case $choice in
+        1)
+            echo "Creating new address book..."
+            > $file
+            echo "Address book created successfully."
+            ;;
+        2)
+            if [ -s $file ]; then
+                echo "----- Address Book -----"
+                cat $file
+            else
+                echo "Address book is empty or not created yet."
+            fi
+            ;;
+        3)
+            echo "Enter Name:"
+            read name
+            echo "Enter Phone Number:"
+            read phone
+            echo "Enter Email:"
+            read email
+            echo "$name | $phone | $email" >> $file
+            echo "Record inserted successfully."
+            ;;
+        4)
+            echo "Enter the name to delete:"
+            read name
+            if grep -q "$name" $file; then
+                grep -v "$name" $file > temp.txt && mv temp.txt $file
+                echo "Record deleted successfully."
+            else
+                echo "Record not found!"
+            fi
+            ;;
+        5)
+            echo "Enter the name to modify:"
+            read name
+            if grep -q "$name" $file; then
+                echo "Enter new phone number:"
+                read new_phone
+                echo "Enter new email:"
+                read new_email
+                grep -v "$name" $file > temp.txt
+                echo "$name | $new_phone | $new_email" >> temp.txt
+                mv temp.txt $file
+                echo "Record modified successfully."
+            else
+                echo "Record not found!"
+            fi
+            ;;
+        6)
+            echo "Exiting program..."
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice! Please try again."
+            ;;
+    esac
+done
+
+
+nano address_book.sh
+chmod +x address_book.sh
+./address_book.sh
